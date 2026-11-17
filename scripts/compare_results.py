@@ -8,7 +8,7 @@ import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
 WORKSPACE = ROOT.parent
-TRUE_DIR = WORKSPACE / "model" / "photo_opu" / "sim2blender" / "ground_truth"
+TRUE_DIR = WORKSPACE / "model-photogrammetry" / "sim2blender" / "ground_truth"
 
 
 def angle_summary(name: str, errors: pd.Series) -> str:
@@ -86,6 +86,32 @@ def save_angle_plot(angles: pd.DataFrame, output_dir: Path) -> None:
     plt.close(fig)
 
 
+def save_error_hist(angles: pd.DataFrame, output_dir: Path) -> None:
+    """Сохранение гистограмм ошибок dphi и dtheta."""
+    fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+    for ax, column, title, label, color in (
+        (axes[0], "dphi_deg", "phi error", "dphi, deg", "tab:blue"),
+        (axes[1], "dtheta_deg", "theta error", "dtheta, deg", "tab:orange"),
+    ):
+        ax.hist(
+            angles[column],
+            bins=30,
+            color=color,
+            edgecolor="white",
+            linewidth=0.8,
+        )
+        ax.axvline(0.0, color="black", linewidth=1.0)
+        ax.set_title(title)
+        ax.set_xlabel(label)
+        ax.set_ylabel("frames")
+        ax.grid(True, alpha=0.4)
+
+    fig.tight_layout()
+    fig.savefig(output_dir / "angle_errors_hist.png", dpi=150)
+    plt.close(fig)
+
+
 def compare(
     camera: str = "cam1",
     true_dir: Path | None = None,
@@ -101,7 +127,8 @@ def compare(
         output_dir: папка для результатов
 
     returns:
-        output_dir: путь к папке с angles.csv, angles.png и summary.txt
+        output_dir: путь к папке с angles.csv, angles.png,
+            angle_errors_hist.png и summary.txt
     """
     true_dir = true_dir or TRUE_DIR
     measured_dir = measured_dir or (
@@ -124,6 +151,7 @@ def compare(
         output_dir / "angles.csv", index=False, float_format="%.9f"
     )
     save_angle_plot(angles, output_dir)
+    save_error_hist(angles, output_dir)
 
     summary = "\n".join(
         [f"Сравнение углов, {camera}", *angle_lines]

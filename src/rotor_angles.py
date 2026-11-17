@@ -37,7 +37,7 @@ def load_marker_corners(path: Path) -> dict[int, np.ndarray]:
     scene = json.loads(path.read_text(encoding="utf-8"))
     result: dict[int, np.ndarray] = {}
     for marker in scene["markers"]:
-        transform = np.asarray(marker["T_BM"], dtype=float)
+        transform = np.asarray(marker["T_RM"], dtype=float)
         corners = np.asarray(marker["corners_local"], dtype=float)
         corners_h = np.hstack([corners, np.ones((4, 1))])
         result[int(marker["id"])] = (transform @ corners_h.T).T[:, :3]

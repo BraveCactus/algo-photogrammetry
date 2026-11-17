@@ -11,7 +11,7 @@ class Config:
 
     data_path: Path = Path("data")
     output_path: Path = Path("output")
-    model_config: Path = Path("../model/photo_opu/sim2blender/scene.json")
+    model_config: Path = Path("../model-photogrammetry/sim2blender/scene.json")
 
     def __post_init__(self):
         """Разрешение относительных путей и создание выходных папок."""

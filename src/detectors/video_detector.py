@@ -43,7 +43,7 @@ class VideoArucoDetector(ArucoDetect):
         dist_coeffs: np.ndarray | None = None,
         axis_length: float = 0.03,
         draw_distances: bool = True,
-        reference_marker_id: int | None = None,   # если None, то мир = камера
+        reference_marker_id: int | None = None,
         camera_name: str | None = None,
         world_from_camera: np.ndarray | None = None,
         save_measurements: bool = False,
